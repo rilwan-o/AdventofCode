@@ -151,6 +151,78 @@ function splitArrayOnSpace(input: String): String[][] {
   
   
 
+
+  function calculateScore2(input: string): number {
+    const data = input.trim().split('\r\n').map(line => line.trim());
+
+    const mapping: { [key: string]: { type: string; desired_outcomes: { [key: string]: string } } } = {
+      'A': {
+        type: 'rock',
+        desired_outcomes: {
+          'X': 'scissors',
+          'Y': 'rock',
+          'Z': 'paper',
+        },
+      },
+      'B': {
+        type: 'paper',
+        desired_outcomes: {
+          'X': 'rock',
+          'Y': 'paper',
+          'Z': 'scissors',
+        },
+      },
+      'C': {
+        type: 'scissors',
+        desired_outcomes: {
+          'X': 'paper',
+          'Y': 'scissors',
+          'Z': 'rock',
+        },
+      },
+    };
+  
+    const playerChoiceScores: { [key: string]: number } = {
+      rock: 1,
+      paper: 2,
+      scissors: 3,
+    };
+  
+    let score = 0;
+  
+    for (const line of data) {
+      const choices = line.split(' ');
+      const opponent = mapping[choices[0]];
+      const desiredOutcome = choices[1];
+  
+      if (opponent) {
+        const player = {
+          type: opponent.desired_outcomes[desiredOutcome],
+        };
+  
+        if (player && playerChoiceScores[player.type]) {
+          score += playerChoiceScores[player.type];
+  
+          if (opponent.type === player.type) {
+            score += 3;
+          } else if (player.type === 'scissors' && opponent.type === 'paper') {
+            score += 6;
+          } else if (player.type === 'rock' && opponent.type === 'scissors') {
+            score += 6;
+          } else if (player.type === 'paper' && opponent.type === 'rock') {
+            score += 6;
+          }
+        }
+      }
+    }
+  
+    return score;
+  }
+  
+    const score2 = calculateScore2(lines);
+  console.log(score2);
+  
+  
     
 
 export {}
