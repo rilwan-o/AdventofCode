@@ -7,7 +7,7 @@ const calories = fs.readFileSync("./public/puzzle.txt", 'utf-8');
 //console.log(calories);
 
 //console.log(findElfWithMostCalories(calories));
-findTop3ElfWithMostCalories(calories);
+//findTop3ElfWithMostCalories(calories);
 
 function findElfWithMostCalories(input: string): number {
   
@@ -91,6 +91,65 @@ function splitArrayOnSpace(input: String): String[][] {
 
 
 
+
+  function calculateScore(input: string): number {
+    const data = input.trim().split('\r\n').map(line => line.trim());
+    
+    const mapping: { [key: string]: { type: string; value?: number } } = {
+      'A': {
+        type: 'rock',
+      },
+      'B': {
+        type: 'paper',
+      },
+      'C': {
+        type: 'scissors',
+      },
+      'X': {
+        type: 'rock',
+        value: 1,
+      },
+      'Y': {
+        type: 'paper',
+        value: 2,
+      },
+      'Z': {
+        type: 'scissors',
+        value: 3,
+      },
+    };
+  
+    let score: number = 0;
+  
+    data.forEach((line: string) => {
+      const choices: string[] = line.split(' ');
+      const opponent: { type: string; value?: number } | undefined = mapping[choices[0]];
+      const player: { type: string; value?: number } | undefined = mapping[choices[1]];
+  
+      if (player) {
+        score += player.value !== undefined ? player.value : 0;
+  
+        if (opponent && opponent.type === player.type) {
+          score += 3;
+        } else if (player.type === 'scissors' && opponent?.type === 'paper') {
+          score += 6;
+        } else if (player.type === 'rock' && opponent?.type === 'scissors') {
+          score += 6;
+        } else if (player.type === 'paper' && opponent?.type === 'rock') {
+          score += 6;
+        }
+      }
+    });
+  
+    return score;
+  }
+  
+  const lines  = fs.readFileSync("./public/rockpaperscissors.txt", 'utf-8');
+
+  const score: number = calculateScore(lines);
+  console.log(score);
+  
+  
 
     
 

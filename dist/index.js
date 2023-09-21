@@ -27,7 +27,7 @@ const fs = __importStar(require("fs"));
 const calories = fs.readFileSync("./public/puzzle.txt", 'utf-8');
 //console.log(calories);
 //console.log(findElfWithMostCalories(calories));
-findTop3ElfWithMostCalories(calories);
+//findTop3ElfWithMostCalories(calories);
 function findElfWithMostCalories(input) {
     const lines = input.trim().split('\n').map(line => line.trim());
     // let linesArrayint: number[][] =[];
@@ -91,3 +91,54 @@ function splitArrayOnSpace(input) {
     }
     return result;
 }
+function calculateScore(input) {
+    const data = input.trim().split('\r\n').map(line => line.trim());
+    const mapping = {
+        'A': {
+            type: 'rock',
+        },
+        'B': {
+            type: 'paper',
+        },
+        'C': {
+            type: 'scissors',
+        },
+        'X': {
+            type: 'rock',
+            value: 1,
+        },
+        'Y': {
+            type: 'paper',
+            value: 2,
+        },
+        'Z': {
+            type: 'scissors',
+            value: 3,
+        },
+    };
+    let score = 0;
+    data.forEach((line) => {
+        const choices = line.split(' ');
+        const opponent = mapping[choices[0]];
+        const player = mapping[choices[1]];
+        if (player) {
+            score += player.value !== undefined ? player.value : 0;
+            if (opponent && opponent.type === player.type) {
+                score += 3;
+            }
+            else if (player.type === 'scissors' && (opponent === null || opponent === void 0 ? void 0 : opponent.type) === 'paper') {
+                score += 6;
+            }
+            else if (player.type === 'rock' && (opponent === null || opponent === void 0 ? void 0 : opponent.type) === 'scissors') {
+                score += 6;
+            }
+            else if (player.type === 'paper' && (opponent === null || opponent === void 0 ? void 0 : opponent.type) === 'rock') {
+                score += 6;
+            }
+        }
+    });
+    return score;
+}
+const lines = fs.readFileSync("./public/rockpaperscissors.txt", 'utf-8');
+const score = calculateScore(lines);
+console.log(score);
